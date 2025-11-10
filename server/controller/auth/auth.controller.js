@@ -67,13 +67,15 @@ export const login = async(req, res) => {
     const { email, password } = req.body;
     try {
         if ( !email || !password) {
-            return next(new AppError(`All field are required`, 400));
+            return res.status(400).json({
+                success: false,
+                message: "All field are required"
+            });
         }
         const userExists = await prisma.user.findFirst({
             where: { email }
         });
         if (!userExists) {
-            return next(new AppError(`Invalid email or password`, 400));
             return res.json({
                 success: false,
                 message: "Invalid email or password"
