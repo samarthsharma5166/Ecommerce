@@ -4,6 +4,7 @@ import CommonForm from "@/components/common/form";
 import { loginformControls } from "@/config";
 import { useDispatch } from "react-redux";
 import { loginUser } from "@/store/auth-slice";
+import { toast } from "sonner";
 
 const initialState = { email: "", password: "" };
 
@@ -19,8 +20,9 @@ function AuthLogin() {
     const data = result?.payload;
 
     if (data?.success) {
-      alert("✅ " + data.message);
-      if (data.user.role === "admin") {
+      toast.success(data.message);
+      console.log(data);
+      if (data.user.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else {
         navigate("/shop/home");

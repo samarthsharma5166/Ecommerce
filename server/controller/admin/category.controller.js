@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import prisma from '../../db/db.js';
+import {prisma} from '../../db/db.js';
 
 export const createCategory = asyncHandler(async (req, res) => {
     const { name } = req.body;

@@ -1,10 +1,11 @@
+import axiosInstance from "@/helpers/axiosInstance";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // ✅ Dummy API delay function (frontend only)
-const fakeApi = (data) =>
-  new Promise((resolve) => {
-    setTimeout(() => resolve(data), 500);
-  });
+// const fakeApi = (data) =>
+//   new Promise((resolve) => {
+//     setTimeout(() => resolve(data), 500);
+//   });
 
 // ✅ Initial State
 const initialState = {
@@ -18,16 +19,9 @@ const initialState = {
 //
 // ✅ Add Product (Dummy API)
 //
-export const addNewProduct = createAsyncThunk(
-  "/products/addnewproduct",
-  async (formData) => {
-    const newProduct = {
-      id: Date.now(),
-      ...formData,
-    };
-
-    const result = await fakeApi(newProduct);
-    return result;
+export const addNewProduct = createAsyncThunk("/products/addnewproduct",async (formData) => {
+  const res = await axiosInstance.post("/api/admin/products", formData);
+    return res;
   }
 );
 

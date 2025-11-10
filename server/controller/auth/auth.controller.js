@@ -1,23 +1,25 @@
-import { prisma } from "../../db/db";
+import { prisma } from "../../db/db.js";
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs';
 const cookieOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: true
 }
-const generateJWTToken = (userData) => {
-    return token = jwt.sign(userData,process.env.JWT_SECRET, { expiresIn: '24h' })
+const generateJWTToken = async(userData) => {
+    const token = await jwt.sign(userData,process.env.JWT_SECRET, { expiresIn: '24h' })
+    return token;
 }
 export const register = async(req,res)=>{
-    const { username, email, password } = req.body;
+    const { userName, email, password } = req.body;
     try {
-        if (!username || !email || !password) {
+        if (!userName || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All field are required"
             });
         }
-        const userExists = await prisma.user.findUnique({ email });
+        const userExists = await prisma.user.findUnique({ where: { email } });
 
         if (userExists) {
             return res.status(400).json({
@@ -30,7 +32,7 @@ export const register = async(req,res)=>{
 
         const user = await prisma.user.create({
           data: {
-            username,
+            userName,
             email,
             password:hashPassword,
           }
@@ -88,7 +90,7 @@ export const login = async(req, res) => {
         }
         
         userExists.password = undefined;
-        const token = await user.generateJWTToken({ id: userExists.id, email: userExists.email, role: userExists.role});
+        const token = await generateJWTToken({ id: userExists.id, email: userExists.email, role: userExists.role});
         res.cookie('token', token, cookieOptions)
         res.status(201).json({
             success: true,

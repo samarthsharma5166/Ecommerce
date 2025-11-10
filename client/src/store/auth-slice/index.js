@@ -1,27 +1,12 @@
+import axiosInstance from "@/helpers/axiosInstance";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 // 🔹 Register User (LocalStorage)
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const userExists = users.find(u => u.email === formData.email);
-      if (userExists) {
-        return rejectWithValue({ success: false, message: "User already exists!" });
-      }
-
-      const newUser = {
-        userName: formData.userName,
-        email: formData.email,
-        password: formData.password,
-        role: "user", // default role
-      };
-
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-
-      return { success: true, message: "Registration successful! Please login." };
+      const res = await axiosInstance.post("/auth/register", formData);
+      return res.data;
     } catch (err) {
       return rejectWithValue({ success: false, message: err.message });
     }
@@ -33,17 +18,8 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const foundUser = users.find(
-        u => u.email === formData.email && u.password === formData.password
-      );
-
-      if (!foundUser) {
-        return rejectWithValue({ success: false, message: "Invalid credentials!" });
-      }
-
-      localStorage.setItem("user", JSON.stringify(foundUser));
-      return { success: true, user: foundUser, message: "Login successful!" };
+      const res = await axiosInstance.post("/auth/login", formData);
+      return res.data;
     } catch (err) {
       return rejectWithValue({ success: false, message: err.message });
     }
@@ -93,8 +69,9 @@ const authSlice = createSlice({
       // Login
       .addCase(loginUser.pending, state => { state.isLoading = true; })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.isLoading = false;
-        state.isAuthenticated = true;
+        state.isAuthenticated = action.payload.success;
         state.user = action.payload.user;
         state.message = action.payload.message;
         state.error = "";

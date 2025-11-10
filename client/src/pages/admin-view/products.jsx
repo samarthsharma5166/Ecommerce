@@ -41,16 +41,21 @@ function AdminProduct() {
       ...formData,
       image: imageFile ? URL.createObjectURL(imageFile) : formData.image,
     };
+    const formData = new FormData();
+    formData.append("name", finalData.name);
+    formData.append("price", finalData.price);
+    formData.append("category", finalData.category);
+    formData.append("image", imageFile);
 
     if (currentEditedId) {
       dispatch(
         updateProduct({
           id: currentEditedId,
-          updatedData: finalData,
+          updatedData: formData,
         })
       );
     } else {
-      dispatch(addNewProduct(finalData));
+      dispatch(addNewProduct(formData));
     }
 
     setOpen(false);

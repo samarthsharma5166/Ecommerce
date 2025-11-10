@@ -4,6 +4,8 @@ import CommonForm from "@/components/common/form";
 import { registerFormControls } from "@/config";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "@/store/auth-slice";
+import { toast } from "sonner";
+
 
 const initialState = { userName: "", email: "", password: "" };
 
@@ -19,7 +21,7 @@ function AuthRegister() {
     const data = result?.payload;
 
     if (data?.success) {
-      alert("✅ Registration successful! Please login.");
+      toast.success(data.message); 
       navigate("/auth/login");
     } else {
       alert(data?.message || "Registration failed");

@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRouter);
-app.use('/api/v1/admin', productRouter);
+app.use('/api/admin', productRouter);
 
 
 app.listen(PORT, () => {

@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import prisma from "../../db/db.js";
+import {prisma} from "../../db/db.js";
 import fs from "fs";
 import path from "path";
 

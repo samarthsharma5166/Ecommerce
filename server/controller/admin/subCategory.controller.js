@@ -1,5 +1,5 @@
 
-import prisma from "../../db/db.js";
+import {prisma} from "../../db/db.js";
 
 // Create a new subcategory
 export const createSubCategory = async (req, res) => {
