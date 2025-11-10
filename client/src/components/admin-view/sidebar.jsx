@@ -5,6 +5,8 @@ import {
   LayoutDashboard,
   ShoppingBasket,
   ChartNoAxesCombined,
+  LocateFixed,
+  Locate,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 
@@ -27,6 +29,18 @@ const adminSidebarMenuItems = [
     label: "Orders",
     path: "/admin/orders",
     icon: <BadgeCheck size={20} />,
+  },
+  {
+    id: "category",
+    label: "Category",
+    path: "/admin/category",
+    icon: <Locate  size={20}/>,
+  },
+  {
+    id: "subcategory",
+    label: "SubCategory",
+    path: "/admin/subcategory",
+    icon: <LocateFixed size={20} />,
   },
 ];
 

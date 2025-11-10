@@ -103,3 +103,37 @@ export const addProductFormElements=[
 }
 
 ]
+
+
+export  const shoppingViewHeaderMenuItems=[
+  {
+    id:'home',
+    label:"Home",
+    path:"/shop/home"
+
+  },
+  {
+    id:'men',
+    label:"Men",
+    path:"/shop/listing"
+
+  },
+  {
+    id:'women',
+    label:"Women",
+    path:"/shop/listing"
+
+  },
+  {
+    id:'kid',
+    label:"Kid",
+    path:"/shop/listing"
+
+  },
+  {
+    id:'watch',
+    label:"Watch",
+    path:"/shop/listing"
+
+  },
+]

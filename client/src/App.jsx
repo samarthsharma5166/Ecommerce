@@ -16,6 +16,8 @@ import ShoppingListing from "./pages/shopping-view/listing";
 import ShoppingAcccount from "./pages/shopping-view/acccount";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
+import AdminCategory from "./pages/admin-view/category";
+import AdminSubCategory from "./pages/admin-view/subcategory";
 
 function App() {
   const isAthonticated = true;
@@ -50,6 +52,8 @@ function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProduct />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="category" element={<AdminCategory />} />
+          <Route path="subcategory" element={<AdminSubCategory />} />
           <Route path="features" element={<AdminFeatures />} />
         </Route>
         <Route
