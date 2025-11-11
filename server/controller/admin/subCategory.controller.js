@@ -11,7 +11,11 @@ export const createSubCategory = async (req, res) => {
         category: { connect: { id: categoryId } },
       },
     });
-    res.status(201).json(subCategory);
+    res.status(201).json({
+      success: true,
+      message: "Subcategory created successfully",
+      subCategory,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -21,7 +25,11 @@ export const createSubCategory = async (req, res) => {
 export const getAllSubCategories = async (req, res) => {
   try {
     const subCategories = await prisma.subCategory.findMany();
-    res.status(200).json(subCategories);
+    res.status(200).json({
+      success: true,
+      message: "Subcategories fetched successfully",
+      subCategories
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -32,7 +40,7 @@ export const getSubCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
     const subCategory = await prisma.subCategory.findUnique({
-      where: { id: parseInt(id) },
+      where: { id:id },
     });
     if (!subCategory) {
       return res.status(404).json({ error: "Subcategory not found" });
@@ -49,13 +57,17 @@ export const updateSubCategory = async (req, res) => {
     const { id } = req.params;
     const { name, categoryId } = req.body;
     const subCategory = await prisma.subCategory.update({
-      where: { id: parseInt(id) },
+      where: { id: (id) },
       data: {
         name,
         category: { connect: { id: categoryId } },
       },
     });
-    res.status(200).json(subCategory);
+    res.status(200).json({
+      success: true,
+      message: "Subcategory updated successfully",
+      subCategory
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -66,9 +78,12 @@ export const deleteSubCategory = async (req, res) => {
   try {
     const { id } = req.params;
     await prisma.subCategory.delete({
-      where: { id: parseInt(id) },
+      where: { id: (id) },
     });
-    res.status(204).send();
+    res.status(204).send({
+      success: true,
+      message: "Subcategory deleted successfully"
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

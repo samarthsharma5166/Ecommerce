@@ -21,7 +21,11 @@ export const createCategory = asyncHandler(async (req, res) => {
         },
     });
 
-    res.status(201).json(category);
+    res.status(201).json({
+       success: true,
+       message: 'Category created successfully',
+       category
+    });
 });
 
 
@@ -90,6 +94,11 @@ export const deleteCategory = asyncHandler(async (req, res) => {
         throw new Error('Cannot delete category. It has associated sub-categories.');
     }
 
-    await prisma.category.delete({ where: { id } });
-    res.status(204).send();
+    const deletedCategory = await prisma.category.delete({ where: { id } });
+ 
+    res.status(200).json({
+        success: true,
+        message: 'Category deleted successfully',
+        deletedCategory
+    });
 });
