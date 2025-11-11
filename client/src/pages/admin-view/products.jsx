@@ -12,10 +12,7 @@ import { addProductFormElements } from "@/config";
 import ProductImageUploads from "@/components/admin-view/image-uploads";
 
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addNewProduct,
-  updateProduct,
-} from "../../store/admin/products-slice";
+import { addNewProduct, updateProduct } from "../../store/admin/products-slice";
 import AdminProductTitle from "../../components/admin-view/product-title";
 
 const initialFormData = {
@@ -37,27 +34,33 @@ function AdminProduct() {
   function onSubmit(e) {
     e.preventDefault();
 
+    // Create final form data
     const finalData = {
       ...formData,
-      image: imageFile ? URL.createObjectURL(imageFile) : formData.image,
+      image: imageFile ? imageFile : formData.image,
     };
-    const formData = new FormData();
-    formData.append("name", finalData.name);
-    formData.append("price", finalData.price);
-    formData.append("category", finalData.category);
-    formData.append("image", imageFile);
+
+    // Use a different variable name for FormData
+    const formDataObj = new FormData();
+    formDataObj.append("name", finalData.name);
+    formDataObj.append("price", finalData.price);
+    formDataObj.append("category", finalData.category);
+    if (imageFile) formDataObj.append("image", imageFile);
 
     if (currentEditedId) {
+      // Edit product
       dispatch(
         updateProduct({
           id: currentEditedId,
-          updatedData: formData,
+          updatedData: formDataObj,
         })
       );
     } else {
-      dispatch(addNewProduct(formData));
+      // Add new product
+      dispatch(addNewProduct(formDataObj));
     }
 
+    // Reset form
     setOpen(false);
     setFormData(initialFormData);
     setImageFile(null);
@@ -66,6 +69,7 @@ function AdminProduct() {
 
   return (
     <>
+      {/* Add Product Button */}
       <div className="mb-5 flex justify-end">
         <Button
           onClick={() => {
@@ -78,6 +82,7 @@ function AdminProduct() {
         </Button>
       </div>
 
+      {/* Product List */}
       <div className="grid px-6 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {productList.map((item) => (
           <AdminProductTitle
@@ -90,6 +95,7 @@ function AdminProduct() {
         ))}
       </div>
 
+      {/* Side Sheet Form */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="overflow-auto">
           <SheetHeader>
@@ -98,11 +104,13 @@ function AdminProduct() {
             </SheetTitle>
           </SheetHeader>
 
+          {/* Image Upload */}
           <ProductImageUploads
             imageFile={imageFile}
             setImageFile={setImageFile}
           />
 
+          {/* Form */}
           <div className="py-6 px-6">
             <CommonForm
               formData={formData}

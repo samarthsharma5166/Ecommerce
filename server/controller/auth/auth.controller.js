@@ -75,6 +75,7 @@ export const login = async(req, res) => {
         const userExists = await prisma.user.findFirst({
             where: { email }
         });
+        
         if (!userExists) {
             return res.json({
                 success: false,

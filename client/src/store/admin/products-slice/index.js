@@ -1,13 +1,7 @@
 import axiosInstance from "@/helpers/axiosInstance";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// ✅ Dummy API delay function (frontend only)
-// const fakeApi = (data) =>
-//   new Promise((resolve) => {
-//     setTimeout(() => resolve(data), 500);
-//   });
-
-// ✅ Initial State
+// Initial state
 const initialState = {
   isLoading: false,
   productList: [
@@ -16,93 +10,90 @@ const initialState = {
   ],
 };
 
-//
-// ✅ Add Product (Dummy API)
-//
-export const addNewProduct = createAsyncThunk("/products/addnewproduct",async (formData) => {
-  const res = await axiosInstance.post("/api/admin/products", formData);
-    return res;
+// Add Product
+export const addNewProduct = createAsyncThunk(
+  "adminProducts/addNewProduct",
+  async (formData) => {
+    try {
+      const res = await axiosInstance.post("/api/admin/products", formData);
+      // Return only the data (new product)
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 );
 
-
-//
-// ✅ Update Product (Dummy API)
-//
+// Update Product
 export const updateProduct = createAsyncThunk(
-  "/products/updateproduct",
+  "adminProducts/updateProduct",
   async ({ id, updatedData }) => {
-    const updatedProduct = {
-      id,
-      ...updatedData,
-    };
-
-    const result = await fakeApi(updatedProduct);
-    return result;
+    try {
+      const res = await axiosInstance.put(`/api/admin/products/${id}`, updatedData);
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 );
 
-//
-// ✅ Delete Product (Dummy API)
-//
+// Delete Product
 export const deleteProduct = createAsyncThunk(
-  "/products/deleteproduct",
+  "adminProducts/deleteProduct",
   async (id) => {
-    await fakeApi(true);
-    return id;
+    try {
+      await axiosInstance.delete(`/api/admin/products/${id}`);
+      return id;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 );
 
-
-//
-// ✅ Slice
-//
+// Slice
 const AdminProductsSlice = createSlice({
   name: "adminProducts",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-
-      // ✅ ADD
+      // Add
       .addCase(addNewProduct.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(addNewProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productList.push(action.payload);
+        state.productList.push(action.payload); // action.payload is the new product object
       })
       .addCase(addNewProduct.rejected, (state) => {
         state.isLoading = false;
       })
 
-      // ✅ UPDATE
+      // Update
       .addCase(updateProduct.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         const updatedProduct = action.payload;
-
-        state.productList = state.productList.map((product) =>
-          product.id === updatedProduct.id ? updatedProduct : product
+        state.productList = state.productList.map((p) =>
+          p.id === updatedProduct.id ? updatedProduct : p
         );
       })
       .addCase(updateProduct.rejected, (state) => {
         state.isLoading = false;
       })
 
-      // ✅ DELETE
+      // Delete
       .addCase(deleteProduct.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        const deleteId = action.payload;
-
-        state.productList = state.productList.filter(
-          (product) => product.id !== deleteId
-        );
+        state.productList = state.productList.filter((p) => p.id !== action.payload);
       })
       .addCase(deleteProduct.rejected, (state) => {
         state.isLoading = false;
