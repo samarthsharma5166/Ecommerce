@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "../ui/button"
 
 function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText }) {
+
   function renderInputByComponenType(getControlItem) {
     let element = null
     const value = formData[getControlItem.name] || ""
@@ -46,7 +47,7 @@ function CommonForm({ formControls, formData, setFormData, onSubmit, buttonText 
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
                 ? getControlItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
+                  <SelectItem key={optionItem.id} value={optionItem.value}>
                       {optionItem.label}
                     </SelectItem>
                   ))

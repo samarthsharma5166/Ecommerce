@@ -28,16 +28,18 @@ export const createCategory = asyncHandler(async (req, res) => {
     });
 });
 
-
 export const getAllCategories = asyncHandler(async (req, res) => {
     const categories = await prisma.category.findMany({
         include: {
             subCategories: true,
         },
     });
-    res.status(200).json(categories);
+    res.status(200).json({
+        success: true,
+        message: 'Categories fetched successfully',
+        categories
+    });
 });
-
 
 export const getCategoryById = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -53,9 +55,12 @@ export const getCategoryById = asyncHandler(async (req, res) => {
         throw new Error('Category not found');
     }
 
-    res.status(200).json(category);
+    res.status(200).json({
+        success: true,
+        message: 'Category fetched successfully',
+        category
+    });
 });
-
 
 export const updateCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -73,7 +78,11 @@ export const updateCategory = asyncHandler(async (req, res) => {
         data: { name },
     });
 
-    res.status(200).json(updatedCategory);
+    res.status(200).json({
+        success: true,
+        message: 'Category updated successfully',
+        updatedCategory
+    });
 });
 
 export const deleteCategory = asyncHandler(async (req, res) => {

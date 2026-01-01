@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createProduct, deleteProduct, editProduct, getProducts } from '../../controller/admin/product.controller.js';
+import { createProduct, deleteProduct, deleteProductImage, editProduct, getProducts } from '../../controller/admin/product.controller.js';
 import upload from '../../middleware/multer.middleware.js';
 import { getCategoryById,deleteCategory,createCategory,getAllCategories,updateCategory } from '../../controller/admin/category.controller.js';
 import { createSubCategory, deleteSubCategory, getAllSubCategories, getSubCategoryById, updateSubCategory } from '../../controller/admin/subCategory.controller.js';
@@ -33,5 +33,9 @@ router.route('/subcategories/:id')
 .get(getSubCategoryById)
 .put(updateSubCategory)
 .delete(deleteSubCategory);
+
+
+router.route("/image")
+    .delete(deleteProductImage);
 
 export default router;

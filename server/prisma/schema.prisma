@@ -24,8 +24,27 @@ model User {
   userName String   @unique
   password  String
   role      Role     @default(USER)
+  reviews   Review[]
+  address   Address[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  street      String
+  addressLine2 String?  // For apartment, suite, etc. (optional)
+  city        String
+  state       String   // Or province
+  postalCode  String
+  country     String
+  phoneNumber String? 
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Product {
@@ -38,7 +57,44 @@ model Product {
   updatedAt     DateTime    @updatedAt
   subCategoryId String
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
+  
+  variants      ProductVariant[]
+  reviews       Review[]
+  info          ProductInfo[]
+
 }
+
+model ProductVariant {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+
+  color       String?
+  size        String?
+  stock       Int      @default(0)
+}
+
+model ProductInfo {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  key       String
+  value     String
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
 
 model Category {
   id            String        @id @default(uuid())

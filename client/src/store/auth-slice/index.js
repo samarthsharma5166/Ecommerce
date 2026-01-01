@@ -1,6 +1,17 @@
 import axiosInstance from "@/helpers/axiosInstance";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// 🔹 Register User (LocalStorage)
+
+// 🔹 Initial Redux state
+const initialState = {
+  isAuthenticated: JSON.parse(localStorage.getItem("isAuthenticated")) || false, // 🚀 Always false initially
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  address: [],
+  isLoading: false,
+  message: "",
+  error: "",
+};
+
+
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, { rejectWithValue }) => {
@@ -26,24 +37,34 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// 🔹 Initial Redux state
-const initialState = {
-  isAuthenticated: false, // 🚀 Always false initially
-  user: null,
-  isLoading: false,
-  message: "",
-  error: "",
-};
+export const logout = createAsyncThunk("auth/logout", async () => {
+  try {
+    await axiosInstance.post("/auth/logout");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+
+  localStorage.removeItem("user");
+  localStorage.removeItem("isAuthenticated");
+  return true;
+});
+
+export const fetchAddress = createAsyncThunk(
+  "auth/fetchAddress",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get("/user/address");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue({ success: false, message: err.message });
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: state => {
-      localStorage.removeItem("user");
-      state.isAuthenticated = false;
-      state.user = null;
-    },
     loadUserFromStorage: state => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
@@ -51,6 +72,9 @@ const authSlice = createSlice({
         state.user = user;
       }
     },
+    addAddress: (state, action) => {
+      state.address.push(action.payload);
+    }
   },
   extraReducers: builder => {
     builder
@@ -75,13 +99,23 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.message = action.payload.message;
         state.error = "";
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        localStorage.setItem("isAuthenticated", JSON.stringify(action.payload.success));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload.message;
-      });
+      })
+      .addCase(logout.fulfilled, state => {
+        state.isAuthenticated = false;
+        state.user = null;
+        localStorage.clear();
+      })
+      .addCase(fetchAddress.fulfilled, (state, action) => {
+        state.address = action.payload.address;
+      })
   }
 });
 
-export const { logout, loadUserFromStorage } = authSlice.actions;
+export const { loadUserFromStorage, addAddress } = authSlice.actions;
 export default authSlice.reducer;

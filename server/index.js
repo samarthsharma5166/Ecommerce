@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import authRouter from './routes/auth.route.js'
 import productRouter from './routes/admin/product.route.js'
+import listingRouter from './routes/listing/listing.route.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -30,6 +31,8 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/admin', productRouter);
+app.use('/api/shop',listingRouter);
+app.use('/api/user',userRoute);
 
 
 app.listen(PORT, () => {

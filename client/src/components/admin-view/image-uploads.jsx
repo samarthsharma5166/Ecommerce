@@ -3,18 +3,17 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { deleteProductImage } from "@/store/admin/products-slice";
+import { useDispatch } from "react-redux";
 
-function ProductImageUpploads({
-  imageFile,
-  setImageFile,
-  uploadedImageUrl,
-  setUploadedImageUrl,
-}) {
+function ProductImageUploads({ imageFiles, setImageFiles,currentEdited }) {
   const inputRef = useRef(null);
-
-  function handleImageFileChange(event) {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) setImageFile(selectedFile);
+  const dispatch = useDispatch();
+  function handleImageFilesChange(event) {
+    const selectedFiles = Array.from(event.target.files || []);
+    if (selectedFiles.length > 0) {
+      setImageFiles((prev) => [...prev, ...selectedFiles]);
+    }
   }
 
   function handleDragOver(event) {
@@ -23,13 +22,20 @@ function ProductImageUpploads({
 
   function handleDrop(event) {
     event.preventDefault();
-    const droppedFile = event.dataTransfer.files?.[0];
-    if (droppedFile) setImageFile(droppedFile);
+    const droppedFiles = Array.from(event.dataTransfer.files || []);
+    if (droppedFiles.length > 0) {
+      setImageFiles((prev) => [...prev, ...droppedFiles]);
+    }
   }
 
-  function handleRemoveImage() {
-    setImageFile(null);
-    if (inputRef.current) {
+  function handleRemoveImage(index) {
+    const imageName = currentEdited.images[index];
+    dispatch(deleteProductImage({ productId: currentEdited.id, imageName }));
+
+    // setImageFiles(updatedFiles);
+
+    // Reset input if no files left
+    if (currentEdited.images.length === 0 && inputRef.current) {
       inputRef.current.value = "";
     }
   }
@@ -37,7 +43,7 @@ function ProductImageUpploads({
   return (
     <div className="w-full px-6 max-w-md mx-auto">
       <Label className="text-lg font-semibold mb-2 block">
-        Upload Image
+        Upload Images
       </Label>
 
       <div
@@ -45,40 +51,89 @@ function ProductImageUpploads({
         onDrop={handleDrop}
         className="border-2 border-dashed rounded-lg p-4"
       >
-        {/* ✅ Hidden File Input */}
+        {/* Hidden Input */}
         <Input
           id="image-upload"
           type="file"
+          multiple
           className="hidden"
           ref={inputRef}
-          onChange={handleImageFileChange}
+          onChange={handleImageFilesChange}
         />
 
-        {!imageFile ? (
-          // ✅ Default Upload UI
+        {imageFiles.length === 0 ? (
+          // Default upload UI
           <Label
             htmlFor="image-upload"
             className="flex flex-col items-center justify-center h-32 cursor-pointer border border-dashed rounded-lg"
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
-            <span>Drag & Drop or click to upload image</span>
+            <span>Drag & Drop or click to upload images</span>
           </Label>
         ) : (
-          // ✅ When file selected show details
-          <div className="flex items-center justify-between p-2">
-            <div className="flex items-center">
-              <FileIcon className="w-8 h-8 text-primary mr-2" />
-              <p className="text-sm font-medium">{imageFile.name}</p>
-            </div>
+          // Preview section
+          <div className="grid grid-cols-3 gap-3">
+            {imageFiles.map((file, index) => (
+              <div
+                key={index}
+                className="relative border rounded-lg overflow-hidden group"
+              >x
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`preview-${index}`}
+                  className="object-cover w-full h-24"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-1 right-1 bg-white/70 rounded-full opacity-0 group-hover:opacity-100 transition"
+                  
+                >
+                  <XIcon className="w-4 h-4 text-red-600" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleRemoveImage}
-              className="hover:text-red-500"
+        {
+          currentEdited && currentEdited.images && currentEdited.images.length > 0 && (
+            <div className="mt-4">
+              <Label className="text-md font-semibold mb-2 block">
+                Existing Images
+              </Label>
+              <div className="grid grid-cols-3 gap-3">
+                {currentEdited.images.map((img, index) => (
+                  <div
+                    key={index}
+                    className="relative border rounded-lg overflow-hidden"
+                  >
+                    <Button onClick={() => handleRemoveImage(index)} className={"absolute top-1 right-1 bg-white/70 rounded-full"}>
+                      <XIcon
+                        className="w-1/2 h-1/2 text-red-600"
+                      />
+                    </Button>
+                    <img
+                      src={`${import.meta.env.VITE_IMAGE_URL}/${img}`}
+                      alt={`existing-${index}`}
+                      className="object-cover w-full h-24"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {imageFiles.length > 0 && (
+          <div className="mt-3 flex justify-center">
+            <Label
+              htmlFor="image-upload"
+              className="text-sm text-primary cursor-pointer flex items-center gap-2"
             >
-              <XIcon className="w-5 h-5" />
-            </Button>
+              <UploadCloudIcon className="w-4 h-4" />
+              Add more images
+            </Label>
           </div>
         )}
       </div>
@@ -86,4 +141,4 @@ function ProductImageUpploads({
   );
 }
 
-export default ProductImageUpploads;
+export default ProductImageUploads;

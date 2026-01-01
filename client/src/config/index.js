@@ -1,5 +1,3 @@
-
-
 export const registerFormControls = [
   {
     name: "userName",
@@ -137,3 +135,63 @@ export  const shoppingViewHeaderMenuItems=[
 
   },
 ]
+
+
+export const sortOptions = [
+  { id: "price-lowtohigh", label: "Price: Low to High" },
+  { id: "price-hightolow", label: "Price: High to Low" },
+  { id: "title-atoz", label: "Title: A to Z" },
+  { id: "title-ztoa", label: "Title: Z to A" },
+];
+
+export const addressFormElements = [
+    {
+        label: "Street Address",
+        name: "street",
+        componentType: "input",
+        type: "text",
+        placeholder: "Enter street address",
+    },
+    {
+        label: "Address Line 2 (Optional)",
+        name: "addressLine2",
+        componentType: "input",
+        type: "text",
+        placeholder: "Apt, suite, building, etc.",
+    },
+    {
+        label: "City",
+        name: "city",
+        componentType: "input",
+        type: "text",
+        placeholder: "Enter city",
+    },
+    {
+        label: "State / Province",
+        name: "state",
+        componentType: "input",
+        type: "text",
+        placeholder: "Enter state or province",
+    },
+    {
+        label: "Postal Code / ZIP",
+        name: "postalCode",
+        componentType: "input",
+        type: "text",
+        placeholder: "Enter postal code",
+    },
+    {
+        label: "Country",
+        name: "country",
+        componentType: "input",
+        type: "text",
+        placeholder: "Enter country",
+    },
+    {
+        label: "Phone Number (Optional)",
+        name: "phoneNumber",
+        componentType: "input",
+        type: "tel", // 'tel' is better for phone numbers
+        placeholder: "Enter phone number for delivery",
+    },
+];

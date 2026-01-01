@@ -12,12 +12,14 @@ import ShoppingLayout from "./components/shoping-view/layout";
 import NotFound from "./pages/not-found";
 import ShoppngIndex from "./pages/shopping-view";
 import Shoppincheckout from "./pages/shopping-view/checkout";
-import ShoppingListing from "./pages/shopping-view/listing";
+import ShoppingListing from "./pages/shopping-view/ShoppingListing";
 import ShoppingAcccount from "./pages/shopping-view/acccount";
 import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
-import AdminCategory from "./pages/admin-view/category";
+import AdminCategory from "./pages/admin-view/Category";
 import AdminSubCategory from "./pages/admin-view/subcategory";
+import ProductDetailTile from "./pages/shopping-view/ProductDetailTile";
+import ShoppingAcccountAddress from "./pages/admin-view/ShoppingAcccountAddress";
 
 function App() {
   const isAthonticated = true;
@@ -64,10 +66,15 @@ function App() {
             </CheckAuth>
           }
         >
+          <Route path="product/:id" element={<ProductDetailTile/>}/>
           <Route path="home" element={<ShoppngIndex />} />
           <Route path="checkout" element={<Shoppincheckout />} />
+          
           <Route path="listing" element={<ShoppingListing />} />
-          <Route path="features" element={<ShoppingAcccount />} />
+          <Route path="account" element={<ShoppingAccount />}>
+            <Route path="address" element={<ShoppingAcccountAddress />} />
+          </Route>
+
         </Route>
         <Route path="*" element={<NotFound />} />
         <Route path="/unauthpage" element={<UnauthPage />} />
